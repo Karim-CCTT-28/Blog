@@ -10,6 +10,9 @@ use App\Http\Middleware\AdminAuth;
 
 
 Route::get("/", function(){
+ return view("Login");
+});
+Route::get("/add", function(){
  return view("Article");
 });
 
