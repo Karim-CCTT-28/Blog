@@ -13,7 +13,7 @@ class AdminAuth
            $admin_id = $request->session()->get("admin_id");
         
         if (!$admin_id) {
-            return response()->json(['message' => 'Unauthorized'], 401);
+            return redirect('/')->with('error', 'يجب تسجيل الدخول أولاً');
         }
 
         return $next($request);

@@ -1,30 +1,40 @@
-<!DOCTYPE html>
-<html>
-<head>
-    <title>Create Post</title>
+@extends('layouts.auth')
 
-</head>
-<style>
-  html,  body{
-        height: 100%;
-        display: flex;
-        gap: 50px;
-    }
-</style>
-<body>
+@section('title', 'تسجيل الدخول')
 
+@section('content')
 
-    <h1>/secret-gate-login</h1>
-    <form method="POST" action="/login">
-        @csrf
+<div class="form-title">مرحباً بك 👋</div>
+<p class="form-subtitle">سجّل دخولك للوصول إلى لوحة الإدارة</p>
 
-        <input type="email" name="email" placeholder="email"><br><br>
+@if(session('error'))
+    <div class="alert alert-error">{{ session('error') }}</div>
+@endif
 
-        <input name="password" type="password" placeholder="password"><br>
+@if($errors->any())
+    <div class="alert alert-error">{{ $errors->first() }}</div>
+@endif
 
-        <button type="submit">Save</button>
-    </form>
+<form method="POST" action="/login">
+    @csrf
 
+    <div class="form-group">
+        <label class="form-label" for="email">البريد الإلكتروني</label>
+        <input class="form-input" type="email" id="email" name="email"
+               placeholder="admin@example.com" value="{{ old('email') }}" required autofocus>
+    </div>
 
-</body>
-</html>
+    <div class="form-group">
+        <label class="form-label" for="password">كلمة المرور</label>
+        <input class="form-input" type="password" id="password" name="password"
+               placeholder="••••••••" required>
+    </div>
+
+    <button class="btn-primary" type="submit">تسجيل الدخول</button>
+</form>
+
+<div class="auth-link">
+    ليس لديك حساب؟ <a href="/new-user">إنشاء حساب جديد</a>
+</div>
+
+@endsection

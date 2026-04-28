@@ -10,25 +10,23 @@ use Illuminate\Support\Facades\Storage;
 class AdminController extends Controller
 {
 
-public function register(Request $request)
-{
-    $request->validate([
-        'name' => 'required',
-        'email' => 'required|email',
-        'password' => 'required'
-    ]);
+    public function register(Request $request)
+    {
+        $request->validate([
+            'name' => 'required',
+            'email' => 'required|email',
+            'password' => 'required'
+        ]);
 
-    $admin = Admin::create([
-        'name' => $request->name,
-        'email' => $request->email,
-        'password' => Hash::make($request->password),
-    ]);
+        $admin = Admin::create([
+            'name' => $request->name,
+            'email' => $request->email,
+            'password' => Hash::make($request->password),
+        ]);
 
-    return response()->json([
-        'message' => 'Admin registered successfully',
-        'admin' => $admin
-    ]);
-}
+        $request->session()->put('admin_id', $admin->id);
+        return redirect('/Articles');
+    }
 
 
 
@@ -38,7 +36,7 @@ public function register(Request $request)
     public function login(Request $request)
     {
         // dd("start");
-        
+
         $request->validate([
             'email' => 'required|email',
             'password' => 'required',
@@ -48,28 +46,19 @@ public function register(Request $request)
 
         if ($admin && Hash::check($request->password, $admin->password)) {
             $request->session()->put('admin_id', $admin->id);
-            // session(['admin_id' => $admin->id]);
-
-            // dd("found");
-            return response()->json([
-                'status' => 'success',
-                'message' => 'Login Successful',
-            ], 200);
+            return redirect('/Articles');
         }
-        // dd("not found");
 
-        return response()->json([
-            'status' => 'error',
-            'message' => 'Invalid Credentials',
-            'userIs'=>$admin
-        ], 401);
+        return redirect('/')
+            ->withInput($request->only('email'))
+            ->with('error', 'البريد الإلكتروني أو كلمة المرور غير صحيحة');
     }
 
 
     function delete(Request $request)
     {
 
-     
+
 
         $Article = Article::find($request->id);
         if ($Article) {
@@ -86,7 +75,7 @@ public function register(Request $request)
 
     function update(Request $request)
     {
-       
+
 
         $this->delete($request);
         $this->save($request);
@@ -95,15 +84,15 @@ public function register(Request $request)
     function save(Request $request)
     {
 
-       
+        //    dd($request->all());
         $request->validate([
-            'title'=> 'required',
+            'title' => 'required',
             'content' => 'required',
             'images.*' => 'image|mimes:jpeg,png,jpg,webp,gif'
         ]);
 
-        $folderName  = null;
-        
+        $folderName = null;
+
         if ($request->hasFile('images')) {
             $folderName = 'post_' . time();
 
@@ -118,27 +107,32 @@ public function register(Request $request)
         # this loop for a test
         // for( $i = 0; $i < 10; $i++ ) {
 
-            Article::create([
-                'title' => $request->input('title'),
-                'content' => $request->input('content'),
-                "images" => $folderName,
-                "by"=>"admin"
-                ]);
-                // }
+        Article::create([
+            'title' => $request->input('title'),
+            'content' => $request->input('content'),
+            "images" => $folderName,
+            "by" => "admin"
+        ]);
+        // }
 
-        return $request->input('content');
+        return response()->json(["staus" => "done"], 200);
 
     }
 
 
 
-  public function readGroup(Request $request)
-{
-    $articles = Article::latest()->simplePaginate(10);
+    public function readGroup(Request $request)
+    {
+        $articles = Article::latest()->paginate(10);
 
-    // return response()->json($Articles);
-    return view('index', compact('articles'));
-}
+        // return response()->json($articles);
+        return view('index', compact('articles'));
+    }
 
+    public function readOne(Request $request, int $id)
+    {
+        $article = Article::findOrFail($id);
+        return view('article', compact('article'));
+    }
 
 }

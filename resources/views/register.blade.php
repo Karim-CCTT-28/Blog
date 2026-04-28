@@ -1,38 +1,46 @@
-<!DOCTYPE html>
-<html>
-<head>
-    <title>Admin Register</title>
-    <meta charset="UTF-8">
-</head>
-<body>
+@extends('layouts.auth')
 
-<h2>Admin Register</h2>
+@section('title', 'إنشاء حساب')
 
+@section('content')
 
+<div class="form-title">إنشاء حساب جديد 🚀</div>
+<p class="form-subtitle">أنشئ حسابك للبدء في إدارة المدونة</p>
+
+@if($errors->any())
+    <div class="alert alert-error">
+        @foreach($errors->all() as $error)
+            <div>• {{ $error }}</div>
+        @endforeach
+    </div>
+@endif
 
 <form method="POST" action="/register">
     @csrf
 
-    <div>
-        <label>Name</label><br>
-        <input type="text" name="name">
+    <div class="form-group">
+        <label class="form-label" for="name">الاسم الكامل</label>
+        <input class="form-input" type="text" id="name" name="name"
+               placeholder="أدخل اسمك" value="{{ old('name') }}" required autofocus>
     </div>
-    <br>
 
-    <div>
-        <label>Email</label><br>
-        <input type="email" name="email">
+    <div class="form-group">
+        <label class="form-label" for="email">البريد الإلكتروني</label>
+        <input class="form-input" type="email" id="email" name="email"
+               placeholder="admin@example.com" value="{{ old('email') }}" required>
     </div>
-    <br>
 
-    <div>
-        <label>Password</label><br>
-        <input type="password" name="password">
+    <div class="form-group">
+        <label class="form-label" for="password">كلمة المرور</label>
+        <input class="form-input" type="password" id="password" name="password"
+               placeholder="••••••••" required>
     </div>
-    <br>
 
-    <button type="submit">Register</button>
+    <button class="btn-primary" type="submit">إنشاء الحساب</button>
 </form>
 
-</body>
-</html>
+<div class="auth-link">
+    لديك حساب بالفعل؟ <a href="/">تسجيل الدخول</a>
+</div>
+
+@endsection
