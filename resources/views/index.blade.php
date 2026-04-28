@@ -30,7 +30,7 @@
                 </h2>
 
                 <p class="text-gray-600 mt-2">
-                    {!! Str::limit($article->content, 150) !!}
+                    {!! $article->content !!}
                 </p>
 
                 <div class="text-sm text-gray-400 mt-3">
