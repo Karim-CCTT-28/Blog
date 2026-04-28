@@ -16,6 +16,12 @@ Route::get("/add", function(){
  return view("Article");
 });
 
+Route::get("new-user", function(){
+    return view("register");
+});
+
+
+Route::post('/register', [AdminController::class, 'register']);
 
 Route::post("/login", [AdminController::class,"login"]);
 

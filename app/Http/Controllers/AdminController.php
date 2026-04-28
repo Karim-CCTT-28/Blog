@@ -10,6 +10,31 @@ use Illuminate\Support\Facades\Storage;
 class AdminController extends Controller
 {
 
+public function register(Request $request)
+{
+    $request->validate([
+        'name' => 'required',
+        'email' => 'required|email',
+        'password' => 'required'
+    ]);
+
+    $admin = Admin::create([
+        'name' => $request->name,
+        'email' => $request->email,
+        'password' => Hash::make($request->password),
+    ]);
+
+    return response()->json([
+        'message' => 'Admin registered successfully',
+        'admin' => $admin
+    ]);
+}
+
+
+
+
+
+
     public function login(Request $request)
     {
         // dd("start");
