@@ -134,9 +134,10 @@ public function register(Request $request)
 
   public function readGroup(Request $request)
 {
-    $Articles = Article::latest()->simplePaginate(10);
+    $articles = Article::latest()->simplePaginate(10);
 
-    return response()->json($Articles);
+    // return response()->json($Articles);
+    return view('index', compact('articles'));
 }
 
 
